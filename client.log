@@ -1,0 +1,98 @@
+root@node-0:/users/xuchuan/RedN/bench/micro# ./hash_bench 10.10.1.2 3
+Mapping dram memory: size 268265456 bytes
+Mapping dram memory: size 268265456 bytes
+DEBUG[tid:84582][src/rdma/connection.c:993]: initializing RC module
+[RDMA-Server] Listening on port 12345 for connections. interrupt (^C) to exit.
+DEBUG[tid:84582][src/rdma/agent.c:123]: attempting to add connection to 10.10.1.2:12345
+DEBUG[tid:84582][src/rdma/connection.c:56]: adding connection on socket #0
+[RDMA-Client] Creating connection (status:pending) to 10.10.1.2:12345 on sockfd 0
+DEBUG[tid:84583][src/rdma/connection.c:521]: received event[0]: RDMA_CM_EVENT_ADDR_RESOLVED
+DEBUG[tid:84583][src/rdma/connection.c:521]: received event[2]: RDMA_CM_EVENT_ROUTE_RESOLVED
+DEBUG[tid:84583][src/rdma/connection.c:324]: initializing rdma device-0
+creating background thread to poll completions (blocking)
+DEBUG[tid:84583][src/rdma/connection.c:459]: Creating QP for sock #0 [SendQ - size: 1024] [RecvQ - size: 1024] flags 0
+DEBUG[tid:84583][src/rdma/connection.c:535]: trigger pre-connection callback
+DEBUG[tid:84583][src/rdma/mr.c:75]: [sockfd 0] registering 2 memory regions & 2 send/rcv buffers
+DEBUG[tid:84583][src/rdma/mr.c:82]: registering mr #0 with addr:140231808983040 and size:268265456
+DEBUG[tid:84583][src/rdma/mr.c:129]: registered local_mr[addr:7f8a43292000, len:268265456, rkey:81412, lkey:81412]
+DEBUG[tid:84583][src/rdma/mr.c:82]: registering mr #1 with addr:140231540711424 and size:268265456
+DEBUG[tid:84583][src/rdma/mr.c:129]: registered local_mr[addr:7f8a332ba000, len:268265456, rkey:76549, lkey:76549]
+Registering msg buffers with size: 304
+DEBUG[tid:84583][src/rdma/mr.c:185]: registered msg_send_mr[addr:7f8a2c041000, len:304]
+DEBUG[tid:84583][src/rdma/mr.c:200]: registered msg_rcv_mr[addr:7f8a2c042000, len:304]
+DEBUG[tid:84583][src/rdma/connection.c:521]: received event[9]: RDMA_CM_EVENT_ESTABLISHED
+DEBUG[tid:84583][src/rdma/connection.c:214]: private data 0x7f8a2c042190 (len: given 196 expected 56)
+DEBUG[tid:84583][src/rdma/mr.c:208]: [sockfd 0] updating remote mr #0 with addr:139876018696192 and size:268265456
+DEBUG[tid:84583][src/rdma/mr.c:208]: [sockfd 0] updating remote mr #1 with addr:139875750424576 and size:268265456
+modify state for socket #0 from 0 to 2
+DEBUG[tid:84583][src/rdma/connection.c:576]: trigger post-connection callback
+Connection established [sockfd:0] [qpnum: 5359]
+ADDING PEER SOCKET 0 (type: 2)
+DEBUG[tid:84582][src/rdma/agent.c:123]: attempting to add connection to 10.10.1.2:12345
+DEBUG[tid:84582][src/rdma/connection.c:56]: adding connection on socket #1
+[RDMA-Client] Creating connection (status:pending) to 10.10.1.2:12345 on sockfd 1
+DEBUG[tid:84583][src/rdma/connection.c:521]: received event[0]: RDMA_CM_EVENT_ADDR_RESOLVED
+DEBUG[tid:84583][src/rdma/connection.c:521]: received event[2]: RDMA_CM_EVENT_ROUTE_RESOLVED
+creating background thread to poll completions (blocking)
+DEBUG[tid:84583][src/rdma/connection.c:459]: Creating QP for sock #1 [SendQ - size: 1024] [RecvQ - size: 1024] flags 8
+DEBUG[tid:84583][src/rdma/connection.c:535]: trigger pre-connection callback
+DEBUG[tid:84583][src/rdma/mr.c:75]: [sockfd 1] registering 2 memory regions & 2 send/rcv buffers
+DEBUG[tid:84583][src/rdma/mr.c:82]: registering mr #0 with addr:140231808983040 and size:268265456
+DEBUG[tid:84583][src/rdma/mr.c:129]: registered local_mr[addr:7f8a43292000, len:268265456, rkey:81412, lkey:81412]
+DEBUG[tid:84583][src/rdma/mr.c:82]: registering mr #1 with addr:140231540711424 and size:268265456
+DEBUG[tid:84583][src/rdma/mr.c:129]: registered local_mr[addr:7f8a332ba000, len:268265456, rkey:76549, lkey:76549]
+Registering msg buffers with size: 304
+DEBUG[tid:84583][src/rdma/mr.c:185]: registered msg_send_mr[addr:7f8a2c075000, len:304]
+DEBUG[tid:84583][src/rdma/mr.c:200]: registered msg_rcv_mr[addr:7f8a2c076000, len:304]
+DEBUG[tid:84583][src/rdma/connection.c:521]: received event[9]: RDMA_CM_EVENT_ESTABLISHED
+DEBUG[tid:84583][src/rdma/connection.c:214]: private data 0x7f8a2c042190 (len: given 196 expected 56)
+DEBUG[tid:84583][src/rdma/mr.c:208]: [sockfd 1] updating remote mr #0 with addr:139876018696192 and size:268265456
+DEBUG[tid:84583][src/rdma/mr.c:208]: [sockfd 1] updating remote mr #1 with addr:139875750424576 and size:268265456
+modify state for socket #1 from 0 to 2
+DEBUG[tid:84583][src/rdma/connection.c:576]: trigger post-connection callback
+Connection established [sockfd:1] [qpnum: 5363]
+ADDING PEER SOCKET 1 (type: 3)
+Starting benchmark ...
+--> Send GET [key 1000 addr 139876018696192]
+DEBUG[tid:84582][src/rdma/verbs.c:1006]: POST --> RDMA_SEND_IMM (SEND WR 1) [send_fd: 1 batch_size: 1]
+updating scur_post 0 by 1 (original size 3)
+DEBUG[tid:84582][src/rdma/verbs.c:714]: POST --> SEND_ENABLE(WR#1) [master = 0] [worker = 1]
+updating scur_post 0 by 1 (original size 2)
+DEBUG[tid:84586][src/rdma/connection.c:626]: COMPLETION --> (SEND WR #1) [qp_num 5363]
+DEBUG[tid:84586][src/rdma/agent.c:222]: skipping message with opcode:0, wr_id:1 
+DEBUG[tid:84586][src/rdma/connection.c:622]: COMPLETION --> (RECV WR #0) [qp_num 5363]
+DEBUG[tid:84586][src/rdma/agent.c:207]: application callback: seqn = 1
+DEBUG[tid:84586][src/rdma/verbs.c:1244]: Received response with seqn 1 [qp_num 5363]
+Received response with id 1 (n_req 0)
+--> Send GET [key 1000 addr 139876018696192]
+DEBUG[tid:84582][src/rdma/verbs.c:1006]: POST --> RDMA_SEND_IMM (SEND WR 2) [send_fd: 1 batch_size: 1]
+updating scur_post 1 by 1 (original size 3)
+DEBUG[tid:84582][src/rdma/verbs.c:714]: POST --> SEND_ENABLE(WR#2) [master = 0] [worker = 1]
+updating scur_post 1 by 1 (original size 2)
+DEBUG[tid:84586][src/rdma/connection.c:626]: COMPLETION --> (SEND WR #2) [qp_num 5363]
+DEBUG[tid:84586][src/rdma/agent.c:222]: skipping message with opcode:0, wr_id:2 
+DEBUG[tid:84586][src/rdma/connection.c:622]: COMPLETION --> (RECV WR #0) [qp_num 5363]
+DEBUG[tid:84586][src/rdma/agent.c:207]: application callback: seqn = 2
+DEBUG[tid:84586][src/rdma/verbs.c:1244]: Received response with seqn 2 [qp_num 5363]
+Received response with id 2 (n_req 0)
+--> Send GET [key 1000 addr 139876018696192]
+DEBUG[tid:84582][src/rdma/verbs.c:1006]: POST --> RDMA_SEND_IMM (SEND WR 3) [send_fd: 1 batch_size: 1]
+updating scur_post 2 by 1 (original size 3)
+DEBUG[tid:84582][src/rdma/verbs.c:714]: POST --> SEND_ENABLE(WR#3) [master = 0] [worker = 1]
+updating scur_post 2 by 1 (original size 2)
+DEBUG[tid:84586][src/rdma/connection.c:626]: COMPLETION --> (SEND WR #3) [qp_num 5363]
+DEBUG[tid:84586][src/rdma/agent.c:222]: skipping message with opcode:0, wr_id:3 
+DEBUG[tid:84586][src/rdma/connection.c:622]: COMPLETION --> (RECV WR #0) [qp_num 5363]
+DEBUG[tid:84586][src/rdma/agent.c:207]: application callback: seqn = 3
+DEBUG[tid:84586][src/rdma/verbs.c:1244]: Received response with seqn 3 [qp_num 5363]
+Received response with id 3 (n_req 0)
+Run Complete
+	count 3
+	avg: 0.015 msec (15.09 usec)
+	min: 0.013 msec (13.40 usec)
+	max: 0.018 msec (17.79 usec)
+	std: 0.002 msec (1.93 usec)
+	50 percentile    : 0.014 msec (14.07 usec)
+	99 percentile    : 0.018 msec (17.79 usec)
+	99.9 percentile  : 0.000 msec (0.00 usec)
+root@node-0:/users/xuchuan/RedN/bench/micro# 

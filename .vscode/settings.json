@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "mr.h": "c",
+        "verbs.h": "c",
+        "agent.h": "c",
+        "globals.h": "c",
+        "common.h": "c",
+        "inttypes.h": "c",
+        "connection.h": "c",
+        "cstdlib": "c",
+        "string_view": "c"
+    }
+}

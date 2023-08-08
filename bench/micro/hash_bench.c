@@ -11,6 +11,7 @@
 #include "agent.h"
 #include "hash_bench.h"
 
+#define EXP_VERBS
 #define BUCKET_COUNT 2
 
 #define OFFLOAD_COUNT 50000
@@ -754,7 +755,7 @@ void post_get_req_sync(int *socks, uint32_t key, addr_t addr, int response_id)
 
 	res[0] = 0;
 #else
-	while(res[IO_SIZE/8 - 1] != 5555 + response_id - 1) {
+	while(res[IO_SIZE/8 - 1] != 5555 + response_id - 1) {  // 通过循环检查MN是否WRITE回来了
 		//printf("res %lu\n", res[IO_SIZE/8 - 1]);
 		//sleep(1);
 	}
@@ -831,7 +832,7 @@ int get_ipaddress(char* ip, char* intf){
 	return ret;
 }
 
-void * offload_hash(void *arg)
+void * offload_hash(void *arg)  // TODO: lxc MAIN LOGIC
 {
 #if 0
 	struct wqe_ctrl_seg *sr0_ctrl = NULL;
@@ -883,7 +884,7 @@ void * offload_hash(void *arg)
 	{
 		start = timer_start();
 
-		IBV_WAIT_EXPLICIT(worker, client, 1);
+		IBV_WAIT_EXPLICIT(worker, client, 1);  // lxc: client qp --> worker qp(WAIT)
 
 		if(k == count - 1)
 			IBV_TRIGGER_EXPLICIT(worker, worker, count_1 - 1);
@@ -896,14 +897,14 @@ void * offload_hash(void *arg)
 		sr1_wrid = IBV_CAS_ASYNC(worker, base_buffer_addr, base_buffer_addr, 0, 1, mr_remote_key(master, MR_BUFFER), client_wq_mr->lkey, 1);
 	
 
-		IBV_WAIT_EXPLICIT(worker, worker, 1);
+		IBV_WAIT_EXPLICIT(worker, worker, 1);  // lxc: 第一个wq参数应该是这个wqe放的wq, 第二个应该是指令的目标wq
 
-		IBV_TRIGGER_EXPLICIT(worker, client, count_2);
+		IBV_TRIGGER_EXPLICIT(worker, client, count_2);  // lxc: worker qp(WAIT) --> worker qp(ENABLE) ENABLE的是client wq
 		
-		sr2_wrid = post_dummy_write(client, IO_SIZE, k + 1);
+		sr2_wrid = post_dummy_write(client, IO_SIZE, k + 1);  // lxc: worker qp(ENABLE) --> client qp(WRITE) 写回结果, client wq应该就是和CN端通信的qp
 
 		if(k == 0)
-			IBV_TRIGGER(master, worker, 2); // trigger first two wrs
+			IBV_TRIGGER(master, worker, 2); // trigger first two wrs, lxc: 注意master和worker、client是不同的wq
 
 #if 1
 
@@ -1064,15 +1065,15 @@ void * offload_hash(void *arg)
 		// set up RECV for client inputs
 		struct rdma_metadata *recv_meta =  (struct rdma_metadata *)
 			calloc(1, sizeof(struct rdma_metadata) + 2 * sizeof(struct ibv_sge));
-
-		recv_meta->sge_entries[0].addr = ((uintptr_t)&sr1_atomic->compare)+1;
+		// ！！！RECV在这里
+		recv_meta->sge_entries[0].addr = ((uintptr_t)&sr1_atomic->compare)+1;  // // lxc: recv在这个地址接收send的数据 key放到CAS里
 		recv_meta->sge_entries[0].length = 3;
-		recv_meta->sge_entries[1].addr = (uintptr_t)&sr0_raddr->raddr;
+		recv_meta->sge_entries[1].addr = (uintptr_t)&sr0_raddr->raddr;  // src放到READ里
 		recv_meta->sge_entries[1].length = 8;
 		recv_meta->length = 11;
 		recv_meta->sge_count = 2;
 
-		IBV_RECEIVE_SG(client, recv_meta, worker_wq_mr->lkey);
+		IBV_RECEIVE_SG(client, recv_meta, worker_wq_mr->lkey);  // lxc： post recv, client qp应该就是和CN端通信的qp
 
 
 
@@ -1337,7 +1338,7 @@ int main(int argc, char **argv)
 		} rdma_meta_t;*/	
  	
 	init_rdma_agent(portno, regions, MR_COUNT, 256,
-			add_peer_socket, remove_peer_socket, test_callback);
+			add_peer_socket, remove_peer_socket, test_callback);  // lxc: 貌似是在add_peer_socket里加载MN端的logic的
 
 	if(get_ipaddress(host, intf)) {
 		printf("Failed to find IP on interface %s\n", intf);
@@ -1486,8 +1487,8 @@ int main(int argc, char **argv)
 #else
 		IBV_RECEIVE_IMM(client_sock[0]);
 #endif
-
-		post_get_req_sync(client_sock, 1000, mr_remote_addr(client_sock[0], MR_DATA), response_id);
+		// ！！！SEND在这里
+		post_get_req_sync(client_sock, 1000, mr_remote_addr(client_sock[0], MR_DATA), response_id);  // lxc: clients端应该是在这里发送send指令的
 
 		//response_id++;
 

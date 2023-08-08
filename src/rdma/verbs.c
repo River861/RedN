@@ -9,6 +9,8 @@ IBV_WRAPPER_FUNC(RDMA_READ)
 IBV_WRAPPER_FUNC(RDMA_WRITE)
 IBV_WRAPPER_FUNC(RDMA_WRITE_WITH_IMM)
 
+#define EXP_VERBS
+
 #ifdef EXP_VERBS
 IBV_CALC_FUNC(MAXLOC)
 IBV_CALC_FUNC(BXOR)
@@ -493,7 +495,7 @@ uint32_t IBV_WAIT(int msockfd, int sockfd)
 #endif
 
 
-	debug_print("POST --> WAIT (SEND WR #%lu) [send_fd:%d wait_fd:%d wait_idx:%d]\n",
+	debug_print("POST --> WAIT (SEND WR #%lu) [send_fd:%d wait_fd:%d wait_idx:%d]\n",  // TODO lxc
 			wr[0].wr_id, msockfd, sockfd, wr->task.cqe_wait.cq_count);
 
 	uint32_t wr_id = wr->wr_id;
@@ -535,7 +537,7 @@ uint32_t IBV_WAIT_TILL(int msockfd, int sockfd, uint32_t count)
 #endif
 
 
-	debug_print("POST --> WAIT (SEND WR #%lu) [send_fd:%d wait_fd:%d wait_idx:%d]\n",
+	debug_print("POST --> WAIT (SEND WR #%lu) [send_fd:%d wait_fd:%d wait_idx:%d]\n",  // TODO lxc
 			wr[0].wr_id, msockfd, sockfd, wr->task.cqe_wait.cq_count);
 
 	uint32_t wr_id = wr->wr_id;
@@ -549,7 +551,7 @@ uint32_t IBV_WAIT_TILL(int msockfd, int sockfd, uint32_t count)
 	return wr_id;
 }
 
-uint32_t IBV_WAIT_EXPLICIT(int msockfd, int sockfd, uint32_t count)
+uint32_t IBV_WAIT_EXPLICIT(int msockfd, int sockfd, uint32_t count)  // ！！！ WAIT的实现
 {
 	struct conn_context *mctx = (struct conn_context *)get_connection(msockfd)->context;
 	struct conn_context *ctx = (struct conn_context *)get_connection(sockfd)->context;	
@@ -579,7 +581,7 @@ uint32_t IBV_WAIT_EXPLICIT(int msockfd, int sockfd, uint32_t count)
 #endif
 
 
-	debug_print("POST --> WAIT (SEND WR #%lu) [send_fd:%d wait_fd:%d wait_idx:%d]\n",
+	debug_print("POST --> WAIT (SEND WR #%lu) [send_fd:%d wait_fd:%d wait_idx:%d]\n",  // TODO lxc *
 			wr[0].wr_id, msockfd, sockfd, wr->task.cqe_wait.cq_count);
 
 	uint32_t wr_id = wr->wr_id;
@@ -711,7 +713,7 @@ uint32_t IBV_TRIGGER(int msockfd, int sockfd, int count)
 	wr->task.wqe_enable.qp = ctx->id->qp;
 	wr->task.wqe_enable.wqe_count = count;
 
-	debug_print("POST --> SEND_ENABLE(WR#%lu) [master = %d] [worker = %d]\n", wr[0].wr_id, msockfd, sockfd);
+	debug_print("POST --> SEND_ENABLE(WR#%lu) [master = %d] [worker = %d]\n", wr[0].wr_id, msockfd, sockfd);  // TODO lxc
 
 	uint32_t wr_id = wr->wr_id;
 
@@ -733,7 +735,7 @@ uint32_t IBV_NEXT_WR_IDX(int sockfd, int pos)
 	return get_wr_idx(ctx, pos);
 }
 
-uint32_t IBV_TRIGGER_EXPLICIT(int msockfd, int sockfd, int count)
+uint32_t IBV_TRIGGER_EXPLICIT(int msockfd, int sockfd, int count)  // ！！！ ENABLE的实现
 {
 	struct conn_context *mctx = (struct conn_context *)get_connection(msockfd)->context;
 	struct conn_context *ctx = (struct conn_context *)get_connection(sockfd)->context;	
@@ -763,7 +765,7 @@ uint32_t IBV_TRIGGER_EXPLICIT(int msockfd, int sockfd, int count)
 	wr->task.wqe_enable.wqe_count = 0;
 #endif
 
-	debug_print("POST --> SEND_ENABLE(WR#%lu) [master = %d] [worker = %d] [idx = %d]\n", wr[0].wr_id, msockfd, sockfd, count);
+	debug_print("POST --> SEND_ENABLE(WR#%lu) [master = %d] [worker = %d] [idx = %d]\n", wr[0].wr_id, msockfd, sockfd, count);  // TODO lxc *
 
 	uint32_t wr_id = wr->wr_id;
 
